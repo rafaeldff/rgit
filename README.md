@@ -23,7 +23,7 @@ The script operates on all git repository clones on subdirectories, even indirec
 
 `rgit`: shows the status of the repositories at a glance:
 
-![Sample output](https://gist.github.com/rafaeldff/7158274/raw/ec6ee3681b636b7d323d47f3fa87042ef13d5be4/2013-10-25-144453_954x534_scrot.png)
+![Sample output](https://raw.github.com/rafaeldff/rgit/gh-pages/screenshot.png)
 
 It shows, for each repository: the current branch, whether the working copy is dirty or clean, whether there are commits to push or pull to/from the upstream branch. This entails a `git fetch` for each repository to get updated information.
 
