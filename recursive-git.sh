@@ -43,11 +43,13 @@ function dirty_state() {
 }
 
 function ahead_of_upstream() {
-  (( $(git rev-list --count "@{upstream}"..HEAD 2>/dev/null) != "0"))
+  count=$(git rev-list --count "@{upstream}"..HEAD 2>/dev/null) || return 100
+  (( $count != "0"))
 }
 
 function behind_upstream() {
-  (( $(git rev-list --count HEAD.."@{upstream}" 2>/dev/null) != "0"))
+  count=$(git rev-list --count HEAD.."@{upstream}" 2>/dev/null) || return 100
+  (( $count != "0"))
 }
 
 function local_state() {
