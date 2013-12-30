@@ -34,7 +34,7 @@ function curr_branch() {
 
 function dirty_state() {
   if ( ! git diff --no-ext-diff --quiet --exit-code ) ||
-    git ls-files --others --exclude-standard --error-unmatch -- '*' >/dev/null 2>/dev/null
+    git ls-files --others --exclude-standard --error-unmatch -- '*' &> /dev/null 
   then
     column-err "dirty"
   else
@@ -64,7 +64,7 @@ function project_status() {
   pushd $1/.. > /dev/null
   proj_name;
   curr_branch
-  git fetch 1> /dev/null 2> /dev/null
+  git fetch &> /dev/null
   dirty_state; local_state; remote_state;
   echo
   popd > /dev/null
