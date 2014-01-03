@@ -122,9 +122,6 @@ function rgit() {
   if [[ "$2" == "-v" || "$1" == "-v" ]]; then
     export VERBOSE=true
   fi
-  if [[ -n "${VERBOSE}" ]]; then
-    echo "Verbose? $VERBOSE"
-  fi
 
   case $1 in
   "pull")
