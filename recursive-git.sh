@@ -60,6 +60,20 @@ function remote_state() {
   behind_upstream && column-err "To pull" || column-ok "pull ok"
 }
 
+function log_only_upstream() {
+  column-heading $'\t'"Only on upstream:"
+  echo 
+  git log --oneline HEAD.."@{upstream}" | sed 's/^/'$'\t''/'
+  echo; echo
+}
+
+function log_only_local() {
+  column-heading $'\t'"Only local:"
+  echo
+  git log --oneline "@{upstream}"..HEAD | sed 's/^/'$'\t''/'
+  echo; echo
+}
+
 function project_status() {
   pushd $1/.. > /dev/null
   proj_name;
@@ -67,6 +81,10 @@ function project_status() {
   git fetch &> /dev/null
   dirty_state; local_state; remote_state;
   echo
+  if [[ -n "${VERBOSE}" ]]; then
+    behind_upstream && log_only_upstream
+    ahead_of_upstream && log_only_local
+  fi
   popd > /dev/null
 }
 
@@ -82,6 +100,8 @@ export -f dirty_state
 export -f local_state
 export -f remote_state
 export -f project_status
+export -f log_only_upstream
+export -f log_only_local
 export -f get_curr_branch
 
 function define_header_size() {
@@ -99,12 +119,24 @@ function rgit_pull() {
 }
 
 function rgit() {
+  if [[ "$2" == "-v" || "$1" == "-v" ]]; then
+    export VERBOSE=true
+  fi
+  if [[ -n "${VERBOSE}" ]]; then
+    echo "Verbose? $VERBOSE"
+  fi
+
   case $1 in
   "pull")
     rgit_pull
+    ;;
+  "show")
+    rgit_status
     ;;
   *)
     rgit_status
     ;;
   esac
+
+  unset VERBOSE
 }
