@@ -61,17 +61,17 @@ function remote_state() {
 }
 
 function log_only_upstream() {
-  column-heading $'\t'"Only on upstream:"
+  column-heading "   ""Only on upstream:"
   echo 
-  git log --oneline HEAD.."@{upstream}" | sed 's/^/'$'\t''/'
-  echo; echo
+  git log --oneline HEAD.."@{upstream}" | sed 's/^/'"   "'/'
+  echo
 }
 
 function log_only_local() {
-  column-heading $'\t'"Only local:"
+  column-heading "   ""Only local:"
   echo
-  git log --oneline "@{upstream}"..HEAD | sed 's/^/'$'\t''/'
-  echo; echo
+  git log --oneline "@{upstream}"..HEAD | sed 's/^/'"   "'/'
+  echo
 }
 
 function project_status() {
