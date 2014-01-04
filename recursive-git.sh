@@ -60,25 +60,37 @@ function remote_state() {
   behind_upstream && column-err "To pull" || column-ok "pull ok"
 }
 
-function log_only_upstream() {
-  column-heading "   ""Only on upstream:"
+function short_git_log() {
+  label=$1
+  revspec=$2
+
+  column-heading "   ${label}"
   echo 
-  git log --oneline HEAD.."@{upstream}" | sed 's/^/'"   "'/'
+
+  git log --pretty=format:"%h [%an] %ad | %s%C(yellow)%d%Creset [%an %ar]" --date=short --color=always ${revspec} | sed 's/^/'"   "'/' 
+  #git log --color=always --oneline ${revspec} | sed 's/^/'"   "'/'
   echo
 }
 
+function log_only_upstream() {
+  short_git_log "Only on upstream:" 'HEAD..@{upstream}'
+}
+
 function log_only_local() {
-  column-heading "   ""Only local:"
-  echo
-  git log --oneline "@{upstream}"..HEAD | sed 's/^/'"   "'/'
-  echo
+  short_git_log "Only local:"  '@{upstream}..HEAD'
+}
+
+function git_fetch() {
+  if [[ -z "$NOFETCH" ]]; then
+    git fetch &> /dev/null
+  fi
 }
 
 function project_status() {
   pushd $1/.. > /dev/null
   proj_name;
   curr_branch
-  git fetch &> /dev/null
+  git_fetch
   dirty_state; local_state; remote_state;
   echo
   if [[ -n "${VERBOSE}" ]]; then
@@ -99,7 +111,9 @@ export -f curr_branch
 export -f dirty_state
 export -f local_state
 export -f remote_state
+export -f git_fetch
 export -f project_status
+export -f short_git_log
 export -f log_only_upstream
 export -f log_only_local
 export -f get_curr_branch
