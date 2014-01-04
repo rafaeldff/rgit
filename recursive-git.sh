@@ -131,6 +131,14 @@ function rgit_pull() {
   find . -type d -name '.git' -exec sh -c 'pushd {}/..; pwd; git pull --ff-only; popd' \;
 }
 
+function rgit_dosh() {
+  find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; $* ; popd &> /dev/null" \;
+}
+
+function rgit_do() {
+  rgit_dosh 
+}
+
 function rgit() {
   if [[ "$2" == "-v" || "$1" == "-v" ]]; then
     export VERBOSE=true
@@ -142,6 +150,12 @@ function rgit() {
     ;;
   "show")
     rgit_status
+    ;;
+  "dosh")
+    rgit_dosh "${*:2}"
+    ;;
+  "do")
+    rgit_dosh git ${*:2}
     ;;
   *)
     rgit_status
