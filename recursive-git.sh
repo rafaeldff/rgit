@@ -68,7 +68,7 @@ function short_git_log() {
   echo 
 
   git log --pretty=format:"%h  %C(yellow)%<(14,trunc)%an%Creset  %s" --date=short --color=always ${revspec} | sed 's/^/'"   "'/' 
-  echo
+  echo; echo
 }
 
 function log_only_upstream() {
