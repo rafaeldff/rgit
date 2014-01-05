@@ -1,21 +1,21 @@
 #! /bin/bash
 
-function column-err {
+function column_err {
   printf "\033[41m%-10s\033[0m" "$1"
 }
-function column-ok {
+function column_ok {
   printf "\033[32m%-10s\033[0m" "$1"
 }
-function column-neutral {
+function column_neutral {
   printf "\033[33m%-10s\033[0m" "$1"
 }
-function column-heading {
+function column_heading {
   printf "\e[48;5;237m%-${HEADER_SIZE}s\e[0m" "$1"
 }
 
 
 function proj_name() {
-  column-heading $(pwd | sed 's,^.*/,,')
+  column_heading $(pwd | sed 's,^.*/,,')
 }
 
 function get_curr_branch() {
@@ -26,9 +26,9 @@ function curr_branch() {
   get_curr_branch;
   if [ "$GIT_CURRENT_BRANCH" == "master" ]
   then
-    column-ok $GIT_CURRENT_BRANCH
+    column_ok $GIT_CURRENT_BRANCH
   else
-    column-neutral $GIT_CURRENT_BRANCH
+    column_neutral $GIT_CURRENT_BRANCH
   fi
 }
 
@@ -36,9 +36,9 @@ function dirty_state() {
   if ( ! git diff --no-ext-diff --quiet --exit-code ) ||
     git ls-files --others --exclude-standard --error-unmatch -- '*' &> /dev/null 
   then
-    column-err "dirty"
+    column_err "dirty"
   else
-    column-ok "clean"
+    column_ok "clean"
   fi
 }
 
@@ -53,18 +53,18 @@ function behind_upstream() {
 }
 
 function local_state() {
-  ahead_of_upstream && column-err "To push" || column-ok "push ok"
+  ahead_of_upstream && column_err "To push" || column_ok "push ok"
 }
   
 function remote_state() {
-  behind_upstream && column-err "To pull" || column-ok "pull ok"
+  behind_upstream && column_err "To pull" || column_ok "pull ok"
 }
 
 function short_git_log() {
   label=$1
   revspec=$2
 
-  column-heading "   ${label}"
+  column_heading "   ${label}"
   echo 
 
   git log --pretty=format:"%h  %C(yellow)%<(14,trunc)%an%Creset  %s" --date=short --color=always ${revspec} | sed 's/^/'"   "'/' 
@@ -101,10 +101,10 @@ function project_status() {
 
 export -f ahead_of_upstream
 export -f behind_upstream
-export -f column-err
-export -f column-ok
-export -f column-neutral
-export -f column-heading
+export -f column_err
+export -f column_ok
+export -f column_neutral
+export -f column_heading
 export -f proj_name
 export -f curr_branch
 export -f dirty_state
@@ -128,22 +128,25 @@ function rgit_status() {
   find . -type d -name '.git' -exec bash -c "project_status {}"  \;
 }
 
-function rgit_pull() {
-  find . -type d -name '.git' -exec sh -c 'pushd {}/..; pwd; git pull --ff-only; popd' \;
-}
 
 function do_command() {
   proj_name
   echo
+  echo $*
   eval $*
+  echo
 }
 
 function rgit_dosh() {
-  find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; do_command $* ; popd &> /dev/null" \;
+  find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; do_command \"$*\" ; popd &> /dev/null" \;
 }
 
 function rgit_do() {
-  rgit_dosh 
+  rgit_dosh git $*
+}
+
+function rgit_pull() {
+  rgit_do pull --ff-only
 }
 
 function rgit() {
