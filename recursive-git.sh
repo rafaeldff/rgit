@@ -99,6 +99,14 @@ function project_status() {
   popd > /dev/null
 }
 
+function do_command() {
+  proj_name
+  echo
+  echo $*
+  eval $*
+  echo
+}
+
 export -f ahead_of_upstream
 export -f behind_upstream
 export -f column_err
@@ -129,13 +137,6 @@ function rgit_status() {
 }
 
 
-function do_command() {
-  proj_name
-  echo
-  echo $*
-  eval $*
-  echo
-}
 
 function rgit_dosh() {
   find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; do_command \"$*\" ; popd &> /dev/null" \;
