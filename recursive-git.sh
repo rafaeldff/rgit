@@ -116,6 +116,7 @@ export -f short_git_log
 export -f log_only_upstream
 export -f log_only_local
 export -f get_curr_branch
+export -f do_command
 
 function define_header_size() {
   local size=$(find . -type d -name .git -exec sh -c "echo {} | sed -e s,/.git,, -e s,^./,, | wc -c" \; | sort -n | tail -1)
@@ -131,8 +132,14 @@ function rgit_pull() {
   find . -type d -name '.git' -exec sh -c 'pushd {}/..; pwd; git pull --ff-only; popd' \;
 }
 
+function do_command() {
+  proj_name
+  echo
+  eval $*
+}
+
 function rgit_dosh() {
-  find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; $* ; popd &> /dev/null" \;
+  find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; do_command $* ; popd &> /dev/null" \;
 }
 
 function rgit_do() {
