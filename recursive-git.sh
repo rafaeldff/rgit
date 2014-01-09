@@ -107,39 +107,23 @@ function do_command() {
   echo
 }
 
-export -f ahead_of_upstream
-export -f behind_upstream
-export -f column_err
-export -f column_ok
-export -f column_neutral
-export -f column_heading
-export -f proj_name
-export -f curr_branch
-export -f dirty_state
-export -f local_state
-export -f remote_state
-export -f git_fetch
-export -f project_status
-export -f short_git_log
-export -f log_only_upstream
-export -f log_only_local
-export -f get_curr_branch
-export -f do_command
-
 function define_header_size() {
-  local size=$(find . -type d -name .git -exec sh -c "echo {} | sed -e s,/.git,, -e s,^./,, | wc -c" \; | sort -n | tail -1)
+  local size=$(find . -type d -name .git | sed -e s,/.git,, -e s,^./,, | sort | head -n 1 | wc -c)
   export HEADER_SIZE=${size:=10}
 }
 
 function rgit_status() {
   define_header_size
-  find . -type d -name '.git' -exec bash -c "project_status {}"  \;
+  for dir in $(find . -type d -name '.git'); do
+    project_status $dir
+  done
 }
 
 
-
 function rgit_dosh() {
-  find . -type d -name '.git' -exec sh -c "pushd {}/.. &> /dev/null ; do_command \"$*\" ; popd &> /dev/null" \;
+  for dir in find . -type d -name '.git'; do
+    pushd {}/.. &> /dev/null ; do_command "$*" ; popd &> /dev/null
+  done
 }
 
 function rgit_do() {
