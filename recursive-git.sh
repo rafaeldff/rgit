@@ -108,7 +108,7 @@ function do_command() {
 }
 
 function define_header_size() {
-  local size=$(find . -type d -name .git | sed -e s,/.git,, -e s,^./,, | sort | head -n 1 | wc -c)
+  local size=$(find . -type d -name .git | sed -e s,/.git,, -e s,^./,, | wc -L )
   export HEADER_SIZE=${size:=10}
 }
 
