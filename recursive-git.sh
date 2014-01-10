@@ -121,13 +121,10 @@ function rgit_status() {
 
 
 function rgit_dosh() {
-  for dir in find . -type d -name '.git'; do
-    pushd {}/.. &> /dev/null ; do_command "$*" ; popd &> /dev/null
+  define_header_size
+  for dir in $(find . -type d -name '.git'); do
+    pushd $dir/.. &> /dev/null ; do_command "$*" ; popd &> /dev/null
   done
-}
-
-function rgit_do() {
-  rgit_dosh git $*
 }
 
 function rgit_pull() {
