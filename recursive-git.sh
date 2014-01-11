@@ -75,7 +75,7 @@ function short_git_log() {
   column_sub_heading "   ${label}"
   echo 
 
-  git log --pretty=format:"%h  %C(yellow)%<(14,trunc)%an%Creset  %s" --date=short --color=always ${revspec} | sed 's/^/'"   "'/' 
+  git log --pretty=format:"   %h  %C(yellow)%<(14,trunc)%an%Creset  %s" --date=short --color=always ${revspec}
   echo; echo
 }
 
