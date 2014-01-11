@@ -12,6 +12,9 @@ function column_neutral {
 function column_heading {
   printf "\e[48;5;237m%-${HEADER_SIZE}s\e[0m" "$1"
 }
+function column_sub_heading {
+  printf "\e[48;5;243m%-${HEADER_SIZE}s\e[0m" "$1"
+}
 
 
 function proj_name() {
@@ -52,6 +55,11 @@ function behind_upstream() {
   (( $count != "0"))
 }
 
+function not_on_upstream() {
+  count=$(git rev-list --count HEAD..."@{upstream}" 2>/dev/null) || return 0
+  (( $count != "0"))
+}
+
 function local_state() {
   ahead_of_upstream && column_err "To push" || column_ok "push ok"
 }
@@ -64,7 +72,7 @@ function short_git_log() {
   label=$1
   revspec=$2
 
-  column_heading "   ${label}"
+  column_sub_heading "   ${label}"
   echo 
 
   git log --pretty=format:"%h  %C(yellow)%<(14,trunc)%an%Creset  %s" --date=short --color=always ${revspec} | sed 's/^/'"   "'/' 
@@ -95,6 +103,10 @@ function project_status() {
   if [[ -n "${VERBOSE}" ]]; then
     behind_upstream && log_only_upstream
     ahead_of_upstream && log_only_local
+  fi
+  if [[ -n "${VERY_VERBOSE}" ]]; then
+    not_on_upstream && column_sub_heading '   Diff HEAD upstream'; echo
+    not_on_upstream && git diff HEAD "@{upstream}" --color=always | cat && echo
   fi
   popd > /dev/null
 }
@@ -133,7 +145,11 @@ function rgit_pull() {
 
 function rgit() {
   if [[ "$2" == "-v" || "$1" == "-v" ]]; then
-    export VERBOSE=true
+    VERBOSE=true
+  fi
+  if [[ "$2" == "-vv" || "$1" == "-vv" ]]; then
+    VERBOSE=true
+    VERY_VERBOSE=true
   fi
 
   case $1 in
@@ -155,4 +171,5 @@ function rgit() {
   esac
 
   unset VERBOSE
+  unset VERY_VERBOSE
 }
