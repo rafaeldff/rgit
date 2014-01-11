@@ -105,8 +105,11 @@ function project_status() {
     ahead_of_upstream && log_only_local
   fi
   if [[ -n "${VERY_VERBOSE}" ]]; then
-    not_on_upstream && column_sub_heading '   Diff HEAD upstream'; echo
-    not_on_upstream && git diff HEAD "@{upstream}" --color=always | sed 's/^/'"   "'/'  && echo
+    if not_on_upstream; then
+      column_sub_heading '   Diff HEAD upstream'; echo
+      git diff HEAD "@{upstream}" --color=always | sed 's/^/'"   "'/'
+      echo
+    fi
   fi
   popd > /dev/null
 }
