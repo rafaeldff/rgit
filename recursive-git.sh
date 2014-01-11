@@ -75,7 +75,7 @@ function short_git_log() {
   column_sub_heading "   ${label}"
   echo 
 
-  git log --pretty=format:"   %h  %C(yellow)%<(14,trunc)%an%Creset  %s" --date=short --color=always ${revspec}
+  git log --pretty=format:"   %h  %C(yellow)%<(14,trunc)%an%Creset  %s %C(dim cyan)(%ar)%Creset" --date=short --color=always ${revspec}
   echo; echo
 }
 
@@ -107,7 +107,7 @@ function project_status() {
   if [[ -n "${VERY_VERBOSE}" ]]; then
     if not_on_upstream; then
       column_sub_heading '   Diff HEAD upstream'; echo
-      git diff HEAD "@{upstream}" --color=always | sed 's/^/'"   "'/'
+      git diff -b HEAD "@{upstream}" --color=always | sed 's/^/'"   "'/'
       echo
     fi
   fi
