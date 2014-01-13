@@ -143,7 +143,7 @@ function rgit_dosh() {
 }
 
 function rgit_pull() {
-  rgit_do pull --ff-only
+  rgit_dosh git pull --ff-only
 }
 
 function rgit() {
