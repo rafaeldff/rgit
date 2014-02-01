@@ -115,9 +115,9 @@ function project_status() {
 }
 
 function do_command() {
-  proj_name
-  echo
-  echo $*
+  #proj_name
+  #echo
+  #echo $*
   eval $*
   echo
 }
@@ -126,6 +126,12 @@ function define_header_size() {
   local size=$(find . -type d -name .git -exec sh -c "echo {} | sed -e s,/.git,, -e s,^./,, | wc -c" \; | sort -n | tail -1)
 
   export HEADER_SIZE=${size:=10}
+}
+
+function rgit_foreach() {
+  for dir in $(find . -type d -name '.git'); do
+    pushd $dir/.. &> /dev/null ; eval "$*" ; popd &> /dev/null
+  done
 }
 
 function rgit_status() {
@@ -138,9 +144,10 @@ function rgit_status() {
 
 function rgit_dosh() {
   define_header_size
-  for dir in $(find . -type d -name '.git'); do
-    pushd $dir/.. &> /dev/null ; do_command "$*" ; popd &> /dev/null
-  done
+  rgit_foreach "proj_name; echo; echo $*; $*; echo"
+  #for dir in $(find . -type d -name '.git'); do
+    #pushd $dir/.. &> /dev/null ; do_command "$*" ; popd &> /dev/null
+  #done
 }
 
 function rgit_pull() {
