@@ -15,6 +15,9 @@ function column_heading {
 function column_sub_heading {
   printf "\e[48;5;243m%-${HEADER_SIZE}s\e[0m" "$1"
 }
+function column_err_heading {
+  printf "\033[41m%-${HEADER_SIZE}s\033[0m" "$1"
+}
 
 
 function proj_name() {
@@ -131,13 +134,27 @@ function rgit_status() {
   rgit_foreach "proj_name; git_fetch; project_status"
 }
 
-
 function rgit_dosh() {
   rgit_foreach "proj_name; echo; echo $*; $*; echo"
 }
 
+function do_pull() {
+ proj_name
+ git_fetch
+ project_status
+ git merge --ff-only @{upstream} &> /dev/null
+ if [[ $? != 0 ]]; then
+   column_err_heading " push failed"
+ else
+   column_sub_heading ""
+ fi
+ 
+ project_status
+ 
+}
+
 function rgit_pull() {
-  rgit_dosh git pull --ff-only
+  rgit_foreach do_pull
 }
 
 function rgit() {
