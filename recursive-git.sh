@@ -132,13 +132,11 @@ function rgit_foreach() {
 }
 
 function rgit_status() {
-  define_header_size
   rgit_foreach "proj_name; project_status"
 }
 
 
 function rgit_dosh() {
-  define_header_size
   rgit_foreach "proj_name; echo; echo $*; $*; echo"
 }
 
@@ -154,6 +152,8 @@ function rgit() {
     VERBOSE=true
     VERY_VERBOSE=true
   fi
+
+  define_header_size
 
   case $1 in
   "pull")
