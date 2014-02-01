@@ -95,7 +95,6 @@ function git_fetch() {
 
 function project_status() {
   curr_branch
-  git_fetch
   dirty_state; local_state; remote_state;
   echo
   if [[ -n "${VERBOSE}" ]]; then
@@ -112,9 +111,6 @@ function project_status() {
 }
 
 function do_command() {
-  #proj_name
-  #echo
-  #echo $*
   eval $*
   echo
 }
@@ -132,7 +128,7 @@ function rgit_foreach() {
 }
 
 function rgit_status() {
-  rgit_foreach "proj_name; project_status"
+  rgit_foreach "proj_name; git_fetch; project_status"
 }
 
 
