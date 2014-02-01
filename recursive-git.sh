@@ -94,8 +94,6 @@ function git_fetch() {
 }
 
 function project_status() {
-  pushd $1/.. > /dev/null
-  proj_name;
   curr_branch
   git_fetch
   dirty_state; local_state; remote_state;
@@ -111,7 +109,6 @@ function project_status() {
       echo
     fi
   fi
-  popd > /dev/null
 }
 
 function do_command() {
@@ -136,18 +133,13 @@ function rgit_foreach() {
 
 function rgit_status() {
   define_header_size
-  for dir in $(find . -type d -name '.git'); do
-    project_status $dir
-  done
+  rgit_foreach "proj_name; project_status"
 }
 
 
 function rgit_dosh() {
   define_header_size
   rgit_foreach "proj_name; echo; echo $*; $*; echo"
-  #for dir in $(find . -type d -name '.git'); do
-    #pushd $dir/.. &> /dev/null ; do_command "$*" ; popd &> /dev/null
-  #done
 }
 
 function rgit_pull() {
