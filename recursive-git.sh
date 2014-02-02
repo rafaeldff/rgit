@@ -119,13 +119,13 @@ function do_command() {
 }
 
 function define_header_size() {
-  local size=$(find . -type d -name .git -exec sh -c "echo {} | sed -e s,/.git,, -e s,^./,, | wc -c" \; | sort -n | tail -1)
+  local size=$(find . -maxdepth 3 -type d -name .git -exec sh -c "echo {} | sed -e s,/.git,, -e s,^./,, | wc -c" \; | sort -n | tail -1)
 
   export HEADER_SIZE=${size:=10}
 }
 
 function rgit_foreach() {
-  for dir in $(find . -type d -name '.git'); do
+  for dir in $(find . -maxdepth 3 -type d -name '.git'); do
     pushd $dir/.. &> /dev/null ; eval "$*" ; popd &> /dev/null
   done
 }
@@ -144,7 +144,7 @@ function do_pull() {
  project_status
  git merge --ff-only @{upstream} &> /dev/null
  if [[ $? != 0 ]]; then
-   column_err_heading " push failed"
+   column_err_heading " pull failed"
  else
    column_sub_heading ""
  fi
