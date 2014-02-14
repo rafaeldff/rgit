@@ -157,18 +157,17 @@ function rgit_pull() {
   rgit_foreach do_pull
 }
 
-function rgit() {
-  if [[ "$2" == "-v" || "$1" == "-v" ]]; then
-    VERBOSE=true
-  fi
-  if [[ "$2" == "-vv" || "$1" == "-vv" ]]; then
-    VERBOSE=true
-    VERY_VERBOSE=true
-  fi
+if [[ "$2" == "-v" || "$1" == "-v" ]]; then
+  VERBOSE=true
+fi
+if [[ "$2" == "-vv" || "$1" == "-vv" ]]; then
+  VERBOSE=true
+  VERY_VERBOSE=true
+fi
 
-  define_header_size
+define_header_size
 
-  case $1 in
+case $1 in
   "pull")
     rgit_pull
     ;;
@@ -184,8 +183,7 @@ function rgit() {
   *)
     rgit_status
     ;;
-  esac
+esac
 
-  unset VERBOSE
-  unset VERY_VERBOSE
-}
+unset VERBOSE
+unset VERY_VERBOSE
