@@ -49,7 +49,7 @@ function dirty_state() {
 }
 
 function ahead_of_upstream() {
-  count=$(git rev-list --count "@{upstream}"..HEAD 2>/dev/null) || return 100
+  count=$(git rev-list --count "@{upstream}"..HEAD 2>/dev/null) || return 0
   (( $count != "0"))
 }
 
