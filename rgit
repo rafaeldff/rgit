@@ -19,9 +19,12 @@ function column_err_heading {
   printf "\033[41m%-${HEADER_SIZE}s\033[0m" "$1"
 }
 
+function get_curr_proj_name() {
+  pwd | sed 's,^.*/,,'
+}
 
 function proj_name() {
-  column_heading $(pwd | sed 's,^.*/,,')
+  column_heading $(get_curr_proj_name)
 }
 
 function get_curr_branch() {
@@ -126,7 +129,12 @@ function define_header_size() {
 
 function rgit_foreach() {
   for dir in $(find . -maxdepth 3 -type d -name '.git'); do
-    pushd $dir/.. &> /dev/null ; eval "$*" ; popd &> /dev/null
+    pushd $dir/.. &> /dev/null ;
+    get_curr_branch
+    if [[ ( -z ${TARGET_BRANCH} ) || ${GIT_CURRENT_BRANCH} == ${TARGET_BRANCH} ]]; then
+      eval "$*" ;
+    fi
+    popd &> /dev/null
   done
 }
 
@@ -157,6 +165,19 @@ function rgit_pull() {
   rgit_foreach do_pull
 }
 
+function do_select() {
+  get_curr_branch
+  if [[ ${GIT_CURRENT_BRANCH} == ${TARGET_BRANCH} ]]; then
+    get_curr_proj_name
+  fi
+}
+
+function rgit_select() {
+  NOFETCH=true
+  TARGET_BRANCH=$1
+  rgit_foreach do_select
+}
+
 if [[ "$2" == "-v" || "$1" == "-v" ]]; then
   VERBOSE=true
 fi
@@ -179,6 +200,9 @@ case $1 in
     ;;
   "do")
     rgit_dosh git ${*:2}
+    ;;
+  "select")
+    rgit_select $2
     ;;
   *)
     rgit_status
