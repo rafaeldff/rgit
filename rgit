@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+#set -x
 
 function column_err {
   printf "\033[41m%-10s\033[0m" "$1"
@@ -132,7 +133,7 @@ function rgit_foreach() {
     pushd $dir/.. &> /dev/null ;
     get_curr_branch
     if [[ ( -z ${TARGET_BRANCH} ) || ${GIT_CURRENT_BRANCH} == ${TARGET_BRANCH} ]]; then
-      eval "$*" ;
+      eval "$@"
     fi
     popd &> /dev/null
   done
@@ -142,8 +143,12 @@ function rgit_status() {
   rgit_foreach "proj_name; git_fetch; project_status"
 }
 
+function quote () {  
+  echo "$@" | sed 's/\([^a-zA-Z0-9 ]\)/\\\1/g'
+}
+
 function rgit_dosh() {
-  rgit_foreach "proj_name; echo; echo $*; $*; echo"
+  rgit_foreach "proj_name; echo; echo '$@'; $(quote $@); echo"
 }
 
 function do_pull() {
