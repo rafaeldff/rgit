@@ -34,7 +34,7 @@ function get_curr_branch() {
 
 function curr_branch() {
   get_curr_branch;
-  if [ "$GIT_CURRENT_BRANCH" == "master" ]
+  if [ "$GIT_CURRENT_BRANCH" == "master" ] || [ "$GIT_CURRENT_BRANCH" == "main" ]
   then
     column_ok $GIT_CURRENT_BRANCH
   else
